@@ -34,11 +34,21 @@
             <artifactId>transport</artifactId>
             <version>6.5.4</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.elasticsearch.client</groupId>-->
-            <!--<artifactId>x-pack-transport</artifactId>-->
-            <!--<version>5.5.1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.15.3</version>
+        </dependency>
+
+        <!--jmsTemplate-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-activemq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-pool</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

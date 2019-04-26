@@ -11,11 +11,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
-import org.elasticsearch.index.search.MultiMatchQuery;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -27,18 +27,39 @@ import java.util.Map;
  * @description:
  * @date: 2019/2/21 17:11
  */
+@Component
 public class ELClient {
 
-    public static TransportClient createClient(){
-        Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+    @Value("${cluster.name}")
+    private  String clusterName;
 
+    @Value("${elasticsearch.ip}")
+    private  String elacticSearchIp;
+
+    @Value("${elasticsearch.port}")
+    private  Integer  elacticSearchPort;
+
+    public  TransportClient createClients(){
+        Settings settings = Settings.builder().put("cluster.name", clusterName).build();
         TransportClient client = null;
         try {
             client = new PreBuiltTransportClient(settings)
-                    .addTransportAddress(new TransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+                    .addTransportAddress(new TransportAddress(InetAddress.getByName(elacticSearchIp), elacticSearchPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        return client;
+    }
+
+    public static TransportClient createClient(){
+//        Settings settings = Settings.builder().put("cluster.name", clusterName).build();
+       TransportClient client = null;
+//        try {
+//            client = new PreBuiltTransportClient(settings)
+//                    .addTransportAddress(new TransportAddress(InetAddress.getByName(elacticSearchIp), elacticSearchPort));
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
         return client;
     }
 
