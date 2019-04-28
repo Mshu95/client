@@ -11,41 +11,35 @@
 		<property name="brokerURL" value="${spring.activemq.broker-url}" />
 	</bean>
 
+    <!--配置连接池-->
 	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
 		destroy-method="stop">
 		<property name="connectionFactory" ref="innerConnectionFactory" />
 		<property name="maxConnections" value="100"></property>
 	</bean>
 
-	<!-- 定义消息队列（默认） -->
-	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
-		<!-- 设置消息队列的名字 -->
-		<constructor-arg>
-			<value>itsaQueue</value>
-		</constructor-arg>
-	</bean>
+    <!-- 配置JMS模板，Spring提供的JMS工具类 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="pooledConnectionFactory" />
+        <property name="defaultDestination" ref="JmsSenderDestination" />
+        <property name="receiveTimeout" value="10000" />
+    </bean>
 
-	<!-- 配置JMS模板（Queue），Spring提供的JMS工具类 -->
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="pooledConnectionFactory" />
-		<property name="defaultDestination" ref="queueDestination" />
-		<property name="receiveTimeout" value="10000" />
-	</bean>
-	
-	<!-- 定义消息队列-->
+    <!-- 定义消息队列queue-->
     <bean id="JmsSenderDestination" class="org.apache.activemq.command.ActiveMQQueue">
         <!-- 设置消息队列的名字 -->
         <constructor-arg>
             <value>Queue_love</value>
         </constructor-arg>
     </bean>
-	
-	<!-- 配置消息队列监听者 -->
-    <bean id="JmsListener" class="com.elasticsearch.activeMq.jmsTemplate.JmsTemplateListener" />
+
+
+    <!-- 配置消息队列监听者 -->
+    <bean id="JmsListener" class="com.elasticsearch.activeMq.jmsTemplate.queue.JmsTemplateListener" />
 
     <!-- 使用spring进行配置 监听 -->
     <bean id="JmsTemplateListenerContainer"
-        class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="pooledConnectionFactory"></property>
         <property name="destination" ref="JmsSenderDestination"></property>
         <property name="messageListener" ref="JmsListener"></property>
@@ -54,5 +48,30 @@
         <property name="concurrency" value="2-4"></property>
         <property name="maxConcurrentConsumers" value="10"></property>
     </bean>
+
+    <!-- 定义消息队列topic-->
+    <bean id="JmsSenderTDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <!-- 设置消息队列的名字 -->
+        <constructor-arg>
+            <value>Topic_love</value>
+        </constructor-arg>
+    </bean>
+
+    <!-- 配置消息队列监听者 -->
+    <bean id="JmsTListener" class="com.elasticsearch.activeMq.jmsTemplate.topic.JmsTemplateTListener" />
+
+    <!-- 使用spring进行配置 监听 -->
+    <bean id="JmsTemplateTListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="pooledConnectionFactory"></property>
+        <property name="destination" ref="JmsSenderTDestination"></property>
+        <property name="messageListener" ref="JmsListener"></property>
+        <property name="sessionTransacted" value="false"></property>
+        <property name="concurrentConsumers" value="6"></property>
+        <property name="concurrency" value="2-4"></property>
+        <property name="maxConcurrentConsumers" value="10"></property>
+    </bean>
+
+
 
 </beans>

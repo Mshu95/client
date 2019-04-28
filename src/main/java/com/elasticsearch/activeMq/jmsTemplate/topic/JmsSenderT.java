@@ -1,4 +1,4 @@
-package com.elasticsearch.activeMq.jmsTemplate;
+package com.elasticsearch.activeMq.jmsTemplate.topic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,17 +20,16 @@ import javax.jms.Session;
  * @date: 2019/4/24 17:16
  */
 @Component
-public class JmsSender {
+public class JmsSenderT {
 
-    Logger logger = LoggerFactory.getLogger(JmsSender.class);
+    Logger logger = LoggerFactory.getLogger(JmsSenderT.class);
 
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @Qualifier("JmsSenderDestination")
+    @Qualifier("JmsSenderTDestination")
     @Autowired
     protected Destination destination;
-
 
     /**
      * 向指定队列发送消息
@@ -39,7 +38,7 @@ public class JmsSender {
      */
     public void sendMessage(final String msg) {
 
-        logger.debug("begin : destination is " + destination.toString() + ", send message is " + msg);
+        logger.info("TOPIC destination :" + destination.toString() + ", 发送消息：" + msg);
 
         jmsTemplate.send(destination, new MessageCreator() {
             @Override
@@ -47,7 +46,6 @@ public class JmsSender {
                 return session.createTextMessage(msg);
             }
         });
-        logger.debug("end : destination is " + destination.toString() + ", send message is " + msg);
     }
 
 }

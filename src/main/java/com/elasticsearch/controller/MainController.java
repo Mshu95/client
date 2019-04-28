@@ -1,6 +1,7 @@
 package com.elasticsearch.controller;
 
-import com.elasticsearch.activeMq.jmsTemplate.JmsSender;
+import com.elasticsearch.activeMq.jmsTemplate.queue.JmsSender;
+import com.elasticsearch.activeMq.jmsTemplate.topic.JmsSenderT;
 import com.elasticsearch.client.ELClient;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -29,6 +30,8 @@ public class MainController {
 
     @Autowired
     private JmsSender jmsSender;
+    @Autowired
+    private JmsSenderT jmsSenderT;
 
     @RequestMapping("main")
     private String main(){
@@ -42,8 +45,12 @@ public class MainController {
 
     @RequestMapping("jms/{msg}")
     public String jmsTemple(@PathVariable String msg){
-        logger.info("发送信息==="+msg);
         jmsSender.sendMessage(msg);
+        return "发送完毕"+msg;
+    }
+    @RequestMapping("jmsT/{msg}")
+    public String jmsTempleT(@PathVariable String msg){
+        jmsSenderT.sendMessage(msg);
         return "发送完毕"+msg;
     }
 }

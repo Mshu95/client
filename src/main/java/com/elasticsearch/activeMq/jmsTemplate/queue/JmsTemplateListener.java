@@ -1,4 +1,4 @@
-package com.elasticsearch.activeMq.jmsTemplate;
+package com.elasticsearch.activeMq.jmsTemplate.queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,9 @@ public class JmsTemplateListener implements MessageListener {
     public void onMessage(Message message) {
         final TextMessage tm = (TextMessage) message;
         try {
-            logger.info("接收信息==="+tm.getText());
+            logger.info("QUEUE接收信息==="+tm.getText());
         } catch (JMSException e) {
             e.printStackTrace();
         }
-
     }
 }
